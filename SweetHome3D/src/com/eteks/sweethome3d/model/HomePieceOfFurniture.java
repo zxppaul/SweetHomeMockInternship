@@ -56,7 +56,7 @@ public class HomePieceOfFurniture extends HomeObject implements PieceOfFurniture
   /** 
    * The properties on which home furniture may be sorted.  
    */
-  public enum SortableProperty {CATALOG_ID, NAME, WIDTH, DEPTH, HEIGHT, MOVABLE, 
+  public enum SortableProperty {CATALOG_ID, NAME, WIDTH, DEPTH, HEIGHT, VOLUME, MOVABLE,
                                 DOOR_OR_WINDOW, COLOR, TEXTURE, VISIBLE, X, Y, ELEVATION, ANGLE,
                                 PRICE, VALUE_ADDED_TAX, VALUE_ADDED_TAX_PERCENTAGE, PRICE_VALUE_ADDED_TAX_INCLUDED, LEVEL};
   private static final Map<SortableProperty, Comparator<HomePieceOfFurniture>> SORTABLE_PROPERTY_COMPARATORS;
@@ -107,6 +107,12 @@ public class HomePieceOfFurniture extends HomeObject implements PieceOfFurniture
           return HomePieceOfFurniture.compare(piece1.depth, piece2.depth);
         }
       });
+    SORTABLE_PROPERTY_COMPARATORS.put(SortableProperty.VOLUME, new Comparator<HomePieceOfFurniture>() {
+      public int compare(HomePieceOfFurniture piece1, HomePieceOfFurniture piece2) {
+        return HomePieceOfFurniture.compare(piece1.getWidth() * piece1.getDepth() * piece1.getHeight(),
+                piece2.getWidth() * piece2.getDepth() * piece2.getHeight());
+      }
+    });
     SORTABLE_PROPERTY_COMPARATORS.put(SortableProperty.MOVABLE, new Comparator<HomePieceOfFurniture>() {
         public int compare(HomePieceOfFurniture piece1, HomePieceOfFurniture piece2) {
           return HomePieceOfFurniture.compare(piece1.movable, piece2.movable);
@@ -586,6 +592,13 @@ public class HomePieceOfFurniture extends HomeObject implements PieceOfFurniture
     } else {
       throw new IllegalStateException("Piece isn't resizable");
     }
+  }
+
+  /**
+   * Returns the volume of this piece of furniture.
+   */
+  public float getVolume() {
+    return this.width * this.depth * this.height;
   }
 
   /**
